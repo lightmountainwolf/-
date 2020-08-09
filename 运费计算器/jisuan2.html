@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>运输成本计算器</title>
+	<style type="text/css">
+	* {
+		margin: 0;
+		padding: 0;
+		
+	} 
+
+	@font-face {
+    font-family: 'PingFangSC-Medium';
+    src: url('fonts/PingFangMedium.ttf'); 
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'lover';
+    src: url('fonts/lover.ttf'); 
+    font-weight: normal;
+	font-style: normal;
+}
+	.cal {
+		margin: 0 auto;
+		width: 400px;
+		
+		background-image: url(img/timg.jpg);
+		border: solid pink;
+		padding: 10px;
+	}
+
+	
+
+	.cal div {
+		text-align: left;
+		font-family:'lover' ;
+	}
+
+	.title {
+		text-align: center;
+		margin-bottom: 10px;
+	}
+
+	input {
+		float: right;
+	}
+
+	button {
+		display: block;
+		margin: 0 auto;
+		zoom: 1;
+		outline: none;  
+		cursor: pointer;  
+		text-align: center;  
+		text-decoration: none;  
+		font: 14px/100% Arial, Helvetica, sans-serif;  
+		padding: .5em 2em .55em;  
+		text-shadow: 0 1px 1px rgba(0,0,0,.3);  
+		-webkit-border-radius: .5em;   
+		-moz-border-radius: .5em;  
+		border-radius: .5em;  
+		-webkit-box-shadow: 0 1px 2px rgba(0,0,0,.2);  
+		-moz-box-shadow: 0 1px 2px rgba(0,0,0,.2);  
+		box-shadow: 0 1px 2px rgba(0,0,0,.2);   
+		font-family: 'lover';
+	}
+	</style>
+</head>
+<body>
+	<div id="abc" class="cal">
+		<h1 class="title">
+			calculator
+		</h1>
+		<div>
+			本数
+			<input type="text" v-model='num'>
+		</div>
+		<div>
+			书长（毫米）
+			<input type="text" v-model='length'>
+		</div>
+		<div>
+			书宽（毫米）
+			<input type="text" v-model='width'>
+		</div>
+		<div>
+			书的p数
+			<input type="text" v-model='page'>
+		</div>
+		<div>
+			封面克重（克/平方米）
+			<input type="text" v-model='coverZhong'>
+		</div>
+		<div>
+			内页克重（克/平方米）
+			<input type="text" v-model='innerZhong'>
+		</div>
+		<div>
+			封面厚度（毫米）
+			<input type="text" v-model='houCover'>
+		</div>
+		<div>
+			内页厚度（毫米）
+			<input type="text" v-model='houInner'>
+		</div>
+		
+		
+		<button v-on:click='handle'>计算</button>
+
+
+		<div >
+			书厚(毫米)
+			<input type="text" v-model='height'>
+		</div>
+		<div >
+			书面积（平方毫米）
+			<input type="text" v-model='mianji'>
+		</div>
+		<div >
+			书体积（立方毫米）
+			<input type="text" v-model='vPerbook'>
+		</div>
+		<div >
+			书重（克）
+			<input type="text" v-model='wPerbook'>
+		</div>
+		<div >
+			每箱本数
+			<input type="text" v-model='nPerbox'>
+		</div>
+		
+		<div >
+			每箱重（千克）（含箱重）
+			<input type="text" v-model='wePerbox'>
+		</div>
+		<div >
+			每箱体积（立方米）
+			<input type="text" v-model='vPerbox'>
+		</div>
+		
+		<div >
+			箱数(不含多余)
+			<input type="text" v-model='numBox'>
+		</div>
+		<div >
+			多余的书(本)
+			<input type="text" v-model='numLeft'>
+		</div>
+		<div >
+			最后一箱重（千克）
+			<input type="text" v-model='wLastBox'>
+		</div>
+		<div >
+			最后一箱体积（立方米）
+			<input type="text" v-model='vLastBox'>
+		</div>
+
+		<div >
+			总重量（千克）
+			<input type="text" v-model='wSum'>
+		</div>
+		<div >
+			总体积（立方米）
+			<input type="text" v-model='vSum'>
+		</div>
+	</div>
+	<script type="text/javascript" src="vue.js"></script>
+	<script type="text/javascript">
+		var vm=new Vue({
+			el: '#abc',
+			data:{
+				num:'',
+				length:'',
+				width:'',
+				page:'',
+				coverZhong:'',
+				innerZhong:'',
+				houCover:'',
+				houInner:'',
+				mianji:'',
+				height:'',
+				vPerbook:'',
+				wPerbook:'',
+				nPerbox:'',
+				wePerbox:'',
+				lBox:'',
+				wBox:'',
+				hBox:'',
+				
+                a:'',
+                b:'',
+                c:'',
+
+				vPerbox:'',
+				numBox:'',
+				numLeft:'',
+				wSum:'',
+				vSum:'',
+				
+				wLastBox:'',
+				vLastBox:'',
+
+			},
+			methods: {
+				handle:function(){
+					this.height=(parseFloat(this.houCover)*4.0+parseFloat(this.houInner)*(this.page-4.0))/2.0;
+					//console.log(this.houCover);
+					this.mianji=this.length*this.width;
+					this.vPerbook=this.mianji*this.height;
+					this.wPerbook=(this.mianji*2*this.coverZhong+this.mianji*(this.page-4)/2*this.innerZhong)*0.001*0.001;
+					this.nPerbox=19000/this.wPerbook;
+					this.nPerbox=Math.floor(this.nPerbox);
+					this.wePerbox=(this.nPerbox*this.wPerbook+1000)*0.001;
+                    console.log(this.length);
+                    console.log(this.width);
+                    console.log(this.height);
+                    console.log(this.nPerbox);
+                    this.a=parseInt(this.length)+parseInt(30);
+                    console.log(this.a);
+                    this.b=parseInt(this.width)+30;
+                    this.c=parseFloat(this.height*this.nPerbox)+30;
+					this.vPerbox=this.a*this.b*this.c*0.001*0.001*0.001;
+					this.numBox=this.num/this.nPerbox;
+					this.numBox=Math.floor(this.numBox);
+					this.numLeft=this.num-(this.numBox*this.nPerbox);
+					this.wSum=this.numBox*this.wePerbox;
+					this.vSum=this.numBox*this.vPerbox;
+
+					if(this.nPerbox>=this.num)
+					{
+						this.numBox=1;
+						this.numLeft=0;
+						this.wePerbox=(this.num*this.wPerbook+1000)*0.001;
+						this.vPerbox=(parseInt(this.length)+30)*(parseInt(this.width)+30)*(parseFloat(this.height*this.num)+30)*0.001*0.001*0.001;
+						this.wSum=this.wePerbox;
+						this.vSum=this.vPerbox
+
+					}
+					if(this.numLeft>0)
+					{
+						this.wLastBox=(parseFloat(this.numLeft*this.wPerbook)+1000)*0.001;
+						this.vLastBox=(parseInt(this.length)+30)*(parseInt(this.width)+30)*(parseFloat(this.height*this.numLeft)+30)*0.001*0.001*0.001;
+
+						this.wSum+=parseFloat(this.wLastBox);
+						this.vSum+=parseFloat(this.vLastBox);
+
+					}
+					
+				}
+			}
+		});
+	</script>
+</body>
+</html>
